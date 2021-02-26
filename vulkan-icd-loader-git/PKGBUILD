@@ -1,0 +1,90 @@
+#_                   _ _ _  _ _____ _  _
+#| | _______   ____ _| | | || |___  | || |
+#| |/ / _ \ \ / / _` | | | || |_ / /| || |_
+#|   <  __/\ V / (_| | | |__   _/ / |__   _|
+#|_|\_\___| \_/ \__,_|_|_|  |_|/_/     |_|
+
+#Maintainer: kevall474 <kevall474@tuta.io> <https://github.com/kevall474>
+#Credits: Laurent Carlier <lordheavym@gmail.com>
+
+#######################################
+
+#Set compiler to build spirv package
+#Set '1' to build with GCC
+#Set '2' to build with CLANG
+#Default is empty. It will build with GCC. To build with different compiler just use : env _compiler=(1 or 2) makepkg -s
+if [ -z ${_compiler+x} ]; then
+  _compiler=
+fi
+
+#######################################
+
+pkgname=vulkan-icd-loader-git
+pkgdesc='Vulkan Installable Client Driver (ICD) Loader (git version)'
+pkgver=1.2.170
+pkgrel=1
+arch=('x86_64')
+url='https://github.com/KhronosGroup/Vulkan-Loader'
+license=(Apache-2.0)
+makedepends=('make' 'cmake' 'extra-cmake-modules' 'python' 'python-lxml' 'libx11' 'libxrandr' 'wayland' 'vulkan-headers' 'git'
+             'gcc' 'gcc-libs' 'clang' 'llvm' 'llvm-libs' 'ninja' 'glibc')
+depends=('glibc')
+optdepends=('vulkan-driver: packaged vulkan driver')
+conflicts=('vulkan-icd-loader')
+provides=('vulkan-icd-loader' 'libvulkan.so' 'vulkan-icd-loader-git')
+source=('Vulkan-Loader::git+https://github.com/KhronosGroup/Vulkan-Loader.git')
+md5sums=('SKIP')
+
+pkgver(){
+ cd Vulkan-Loader
+ echo 1.2.170.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+}
+
+
+prepare(){
+  cd Vulkan-Loader
+  #scripts/update_deps.py
+  git clone https://github.com/google/googletest.git external/googletest # optional
+}
+
+build(){
+if [[ $_compiler = "1" ]]; then
+  export CC="gcc"
+  export CXX="g++"
+elif [[ $_compiler = "2" ]]; then
+  export CC="clang"
+  export CXX="clang++"
+else
+  export CC="gcc"
+  export CXX="g++"
+fi
+
+  cd Vulkan-Loader
+
+  rm -rf build_64
+
+  cmake -H. -G Ninja -Bbuild_64 \
+  -DCMAKE_C_FLAGS=-m64 \
+  -DCMAKE_CXX_FLAGS=-m64 \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DVULKAN_HEADERS_INSTALL_DIR=/usr \
+  -DCMAKE_INSTALL_LIBDIR=lib \
+  -DCMAKE_INSTALL_SYSCONFDIR=/etc \
+  -DCMAKE_INSTALL_DATADIR=/share \
+  -DCMAKE_SKIP_RPATH=True \
+  -DBUILD_TESTS=ON \
+  -DBUILD_WSI_XCB_SUPPORT=On \
+  -DBUILD_WSI_XLIB_SUPPORT=On \
+  -DBUILD_WSI_WAYLAND_SUPPORT=On \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_LOADER=ON
+
+  ninja -C build_64
+}
+
+package_vulkan-icd-loader-git(){
+  DESTDIR="${pkgdir}" ninja -C Vulkan-Loader/build_64/ install
+
+  # install licence
+  install -Dm644 "${srcdir}"/Vulkan-Loader/LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

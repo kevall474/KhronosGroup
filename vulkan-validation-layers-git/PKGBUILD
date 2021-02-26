@@ -1,0 +1,96 @@
+#_                   _ _ _  _ _____ _  _
+#| | _______   ____ _| | | || |___  | || |
+#| |/ / _ \ \ / / _` | | | || |_ / /| || |_
+#|   <  __/\ V / (_| | | |__   _/ / |__   _|
+#|_|\_\___| \_/ \__,_|_|_|  |_|/_/     |_|
+
+#Maintainer: kevall474 <kevall474@tuta.io> <https://github.com/kevall474>
+#Credits: Laurent Carlier <lordheavym@gmail.com>
+
+#######################################
+
+#Set compiler to build spirv package
+#Set '1' to build with GCC
+#Set '2' to build with CLANG
+#Default is set to '2'. It will build with CLANG (there is some build issues with GCC). To build with different compiler just use : env _compiler=(1 or 2) makepkg -s
+if [ -z ${_compiler+x} ]; then
+  _compiler=2
+fi
+
+#######################################
+
+pkgname=vulkan-validation-layers-git
+pkgdesc='Vulkan Validation Layers (git version)'
+pkgver=1.2.170
+pkgrel=1
+arch=('x86_64')
+url='https://github.com/KhronosGroup/Vulkan-ValidationLayers'
+license=(Apache-2.0)
+makedepends=('cmake' 'make' 'extra-cmake-modules' 'python' 'python-lxml' 'libx11' 'libxrandr' 'wayland' 'git'
+             'gcc' 'gcc-libs' 'clang' 'llvm' 'llvm-libs' 'ninja')
+depends=('gcc-libs' 'llvm-libs' 'vulkan-icd-loader' 'vulkan-headers' 'libx11' 'glslang')
+conflicts=('vulkan-validation-layers')
+provides=('vulkan-validation-layers' 'vulkan-validation-layers-git')
+source=('Vulkan-ValidationLayers::git+https://github.com/KhronosGroup/Vulkan-ValidationLayers.git')
+md5sums=('SKIP')
+
+pkgver(){
+  cd Vulkan-ValidationLayers
+  echo 1.2.170.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+}
+
+prepare(){
+  cd Vulkan-ValidationLayers
+  #scripts/update_deps.py
+  git clone https://github.com/google/googletest.git external/googletest # optional
+}
+
+build(){
+if [[ $_compiler = "1" ]]; then
+  export CC="gcc"
+  export CXX="g++"
+elif [[ $_compiler = "2" ]]; then
+  export CC="clang"
+  export CXX="clang++"
+else
+  export CC="gcc"
+  export CXX="g++"
+fi
+
+  cd Vulkan-ValidationLayers
+
+  rm -rf build_64
+
+  #cmake -C helper.cmake \
+  cmake -H. -G Ninja -Bbuild_64 \
+  -DCMAKE_C_FLAGS=-m64 \
+  -DCMAKE_CXX_FLAGS=-m64 \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DVULKAN_HEADERS_INSTALL_DIR=/usr \
+  -DGLSLANG_INSTALL_DIR=/usr \
+  -DSPIRV_HEADERS_INSTALL_DIR=/usr \
+  -DSPIRV_TOOLS_INSTALL_DIR=/usr \
+  -DCMAKE_INSTALL_LIBDIR=lib \
+  -DCMAKE_INSTALL_SYSCONFDIR=/etc \
+  -DCMAKE_INSTALL_DATADIR=/share \
+  -DCMAKE_INSTALL_INCLUDEDIR="/usr/include/" \
+  -DBUILD_LAYERS=ON \
+  -DBUILD_LAYER_SUPPORT_FILES=ON \
+  -DCMAKE_SKIP_RPATH=True \
+  -DBUILD_TESTS=ON \
+  -DINSTALL_TESTS=ON \
+  -DBUILD_WSI_XCB_SUPPORT=On \
+  -DBUILD_WSI_XLIB_SUPPORT=On \
+  -DBUILD_WSI_WAYLAND_SUPPORT=On \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DUSE_CCACHE=OFF
+
+  ninja -C build_64
+}
+
+package_vulkan-validation-layers-git(){
+  DESTDIR="$pkgdir" ninja -C Vulkan-ValidationLayers/build_64/ install
+
+  # install licence
+  install -Dm644 "${srcdir}"/Vulkan-ValidationLayers/LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

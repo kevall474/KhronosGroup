@@ -1,0 +1,125 @@
+#_                   _ _ _  _ _____ _  _
+#| | _______   ____ _| | | || |___  | || |
+#| |/ / _ \ \ / / _` | | | || |_ / /| || |_
+#|   <  __/\ V / (_| | | |__   _/ / |__   _|
+#|_|\_\___| \_/ \__,_|_|_|  |_|/_/     |_|
+
+#Maintainer: kevall474 <kevall474@tuta.io> <https://github.com/kevall474>
+
+#######################################
+
+#Set compiler to build spirv package
+#Set '1' to build with GCC
+#Set '2' to build with CLANG
+#Default is empty. It will build with GCC. To build with different compiler just use : env _compiler=(1 or 2) makepkg -s
+if [ -z ${_compiler+x} ]; then
+  _compiler=
+fi
+
+#######################################
+
+pkgname=lib32-spirv-cross-git
+pkgdesc='A tool designed for parsing and converting SPIR-V to other shader languages. (32-bit) (git version)'
+pkgver=2021.01.15
+pkgrel=1
+arch=('i686' 'x86_64')
+url='https://github.com/KhronosGroup/SPIRV-Cross/'
+license=(Apache-2.0)
+makedepends=('make' 'cmake' 'git' 'extra-cmake-modules' 'python' 'python-nose' 'ninja' 'clang' 'llvm' 'llvm-libs'
+             'gcc' 'gcc-libs' 'lib32-clang' 'lib32-llvm' 'lib32-llvm-libs' 'lib32-gcc-libs')
+depends=('spirv-cross-git')
+provides=('lib32-spirv-cross' 'lib32-spirv-cross-git')
+source=('SPIRV-Cross::git+https://github.com/KhronosGroup/SPIRV-Cross.git')
+md5sums=('SKIP')
+
+pkgver(){
+  cd SPIRV-Cross
+  echo 2021.01.15.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+}
+
+build(){
+if [[ $_compiler = "1" ]]; then
+  export CC="gcc"
+  export CXX="g++"
+elif [[ $_compiler = "2" ]]; then
+  export CC="clang"
+  export CXX="clang++"
+else
+  export CC="gcc"
+  export CXX="g++"
+fi
+export PKG_CONFIG=/usr/bin/i686-pc-linux-gnu-pkg-config
+
+  cd SPIRV-Cross
+
+  rm -rf build_32-{static,shared}
+
+  cmake -H. -G Ninja -Bbuild_32-static \
+  -DCMAKE_C_FLAGS=-m32 \
+  -DCMAKE_CXX_FLAGS=-m32 \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DCMAKE_INSTALL_LIBDIR=lib32 \
+  -DSPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS=OFF \
+  -DSPIRV_CROSS_SHARED=OFF \
+  -DSPIRV_CROSS_STATIC=ON \
+  -DSPIRV_CROSS_CLI=ON \
+  -DSPIRV_CROSS_ENABLE_TESTS=OFF \
+  -DSPIRV_CROSS_ENABLE_GLSL=ON \
+  -DSPIRV_CROSS_ENABLE_HLSL=ON \
+  -DSPIRV_CROSS_ENABLE_MSL=ON \
+  -DSPIRV_CROSS_ENABLE_CPP=ON \
+  -DSPIRV_CROSS_ENABLE_REFLECT=ON \
+  -DSPIRV_CROSS_ENABLE_C_API=ON \
+  -DSPIRV_CROSS_ENABLE_UTIL=ON \
+  -DSPIRV_CROSS_SANITIZE_ADDRESS=OFF \
+  -DSPIRV_CROSS_SANITIZE_MEMORY=OFF \
+  -DSPIRV_CROSS_SANITIZE_THREADS=OFF \
+  -DSPIRV_CROSS_SANITIZE_UNDEFINED=OFF \
+  -DSPIRV_CROSS_NAMESPACE_OVERRIDE=OFF \
+  -DSPIRV_CROSS_FORCE_STL_TYPES=OFF \
+  -DSPIRV_CROSS_SKIP_INSTALL=OFF \
+  -DSPIRV_CROSS_WERROR=OFF \
+  -DSPIRV_CROSS_MISC_WARNINGS=OFF \
+  -DSPIRV_CROSS_FORCE_PIC=OFF
+
+  cmake -H. -G Ninja -Bbuild_32-shared \
+  -DCMAKE_C_FLAGS=-m32 \
+  -DCMAKE_CXX_FLAGS=-m32 \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DCMAKE_INSTALL_LIBDIR=lib32 \
+  -DSPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS=OFF \
+  -DSPIRV_CROSS_SHARED=ON \
+  -DSPIRV_CROSS_STATIC=OFF \
+  -DSPIRV_CROSS_CLI=OFF \
+  -DSPIRV_CROSS_ENABLE_TESTS=OFF \
+  -DSPIRV_CROSS_ENABLE_GLSL=ON \
+  -DSPIRV_CROSS_ENABLE_HLSL=ON \
+  -DSPIRV_CROSS_ENABLE_MSL=ON \
+  -DSPIRV_CROSS_ENABLE_CPP=ON \
+  -DSPIRV_CROSS_ENABLE_REFLECT=ON \
+  -DSPIRV_CROSS_ENABLE_C_API=ON \
+  -DSPIRV_CROSS_ENABLE_UTIL=ON \
+  -DSPIRV_CROSS_SANITIZE_ADDRESS=OFF \
+  -DSPIRV_CROSS_SANITIZE_MEMORY=OFF \
+  -DSPIRV_CROSS_SANITIZE_THREADS=OFF \
+  -DSPIRV_CROSS_SANITIZE_UNDEFINED=OFF \
+  -DSPIRV_CROSS_NAMESPACE_OVERRIDE=OFF \
+  -DSPIRV_CROSS_FORCE_STL_TYPES=OFF \
+  -DSPIRV_CROSS_SKIP_INSTALL=OFF \
+  -DSPIRV_CROSS_WERROR=OFF \
+  -DSPIRV_CROSS_MISC_WARNINGS=OFF \
+  -DSPIRV_CROSS_FORCE_PIC=OFF
+
+  ninja -C build_32-static
+  ninja -C build_32-shared
+}
+
+package_lib32-spirv-cross-git(){
+  DESTDIR="$pkgdir" ninja -C SPIRV-Cross/build_32-static/ install
+  DESTDIR="$pkgdir" ninja -C SPIRV-Cross/build_32-shared/ install
+
+  rm -rf "${pkgdir}"/usr/{bin,include,share}
+
+  # install licence
+  install -Dm644 "${srcdir}"/SPIRV-Cross/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

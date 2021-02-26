@@ -1,0 +1,92 @@
+#_                   _ _ _  _ _____ _  _
+#| | _______   ____ _| | | || |___  | || |
+#| |/ / _ \ \ / / _` | | | || |_ / /| || |_
+#|   <  __/\ V / (_| | | |__   _/ / |__   _|
+#|_|\_\___| \_/ \__,_|_|_|  |_|/_/     |_|
+
+#Maintainer: kevall474 <kevall474@tuta.io> <https://github.com/kevall474>
+#Credits: Laurent Carlier <lordheavym@gmail.com>
+
+#######################################
+
+#Set compiler to build spirv package
+#Set '1' to build with GCC
+#Set '2' to build with CLANG
+#Default is empty. It will build with GCC. To build with different compiler just use : env _compiler=(1 or 2) makepkg -s
+if [ -z ${_compiler+x} ]; then
+  _compiler=
+fi
+
+#######################################
+
+pkgname=vulkan-lunarg-tools-git
+pkgdesc='Extra layers for Vulkan development - Vulkan lunarg tools (git version)'
+pkgver=1.2.170
+pkgrel=1
+arch=('x86_64')
+url='http://lunarg.com/'
+license=('custom')
+makedepends=('git' 'cmake' 'python' 'libx11' 'libxrandr' 'wayland' 'qt5-svg' 'qt5-webengine' 'clang' 'llvm' 'llvm-libs' 'gcc' 'gcc-libs')
+depends=('qt5-svg' 'qt5-webengine' 'vulkan-validation-layers')
+conflicts=('vulkan-trace<1.2.148.1' 'vulkan-extra-tools' 'vulkan-extra-layers')
+provides=('vulkan-extra-tools' 'vulkan-extra-layers' 'vulkan-lunarg-tools')
+source=('VulkanTools::git+https://github.com/LunarG/VulkanTools.git')
+sha256sums=('SKIP')
+
+pkgver(){
+ cd "${srcdir}"/VulkanTools
+ echo 1.2.170.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+}
+
+prepare(){
+  cd "${srcdir}"/VulkanTools
+  ./update_external_sources.sh
+  #./scripts/update_deps.py
+}
+
+build(){
+if [[ $_compiler = "1" ]]; then
+  export CC="gcc"
+  export CXX="g++"
+elif [[ $_compiler = "2" ]]; then
+  export CC="clang"
+  export CXX="clang++"
+else
+  export CC="gcc"
+  export CXX="g++"
+fi
+
+  cd "${srcdir}"/VulkanTools
+
+  rm -rf build
+
+  cmake -H. -G Ninja -Bbuild \
+  -DCMAKE_C_FLAGS=-m64 \
+  -DCMAKE_CXX_FLAGS=-m64 \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DCMAKE_INSTALL_SYSCONFDIR=/etc \
+  -DCMAKE_INSTALL_DATADIR=/usr/share \
+  -DCMAKE_INSTALL_LIBDIR=lib \
+  -DCMAKE_SKIP_RPATH=True \
+  -DBUILD_WSI_XCB_SUPPORT=On \
+  -DBUILD_WSI_XLIB_SUPPORT=On \
+  -DBUILD_WSI_WAYLAND_SUPPORT=On \
+  -DBUILD_TESTS=ON \
+  -DBUILD_LAYERSVT=ON \
+  -DBUILD_VLF=ON \
+  -DBUILD_VIA=OFF \
+  -DBUILD_LAYERMGR=ON \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DVULKAN_HEADERS_INSTALL_DIR=/usr \
+  -DVULKAN_LOADER_INSTALL_DIR=/usr \
+  -DVULKAN_VALIDATIONLAYERS_INSTALL_DIR=/usr
+
+  ninja -C build
+}
+
+package(){
+  DESTDIR="$pkgdir" ninja -C "${srcdir}"/VulkanTools/build/ install
+
+  # install licence
+  install -Dm644 "${srcdir}"/VulkanTools/LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

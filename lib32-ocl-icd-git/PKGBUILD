@@ -1,0 +1,92 @@
+#_                   _ _ _  _ _____ _  _
+#| | _______   ____ _| | | || |___  | || |
+#| |/ / _ \ \ / / _` | | | || |_ / /| || |_
+#|   <  __/\ V / (_| | | |__   _/ / |__   _|
+#|_|\_\___| \_/ \__,_|_|_|  |_|/_/     |_|
+
+#Maintainer: kevall474 <kevall474@tuta.io> <https://github.com/kevall474>
+#Credits: Laurent Carlier <lordheavym@gmail.com>
+#Credits: Lukas Jirkovsky <l.jirkovsky@gmail.com>
+
+#######################################
+
+#Set compiler to build spirv package
+#Set '1' to build with GCC
+#Set '2' to build with CLANG
+#Default is empty. It will build with GCC. To build with different compiler just use : env _compiler=(1 or 2) makepkg -s
+if [ -z ${_compiler+x} ]; then
+  _compiler=
+fi
+
+#######################################
+
+pkgname=lib32-ocl-icd-git
+pkgdesc="OpenCL ICD Bindings (git version) (32bit)"
+pkgver=2020.12.18
+pkgrel=1
+arch=('i686' 'x86_64')
+url="https://github.com/OCL-dev/ocl-icd"
+license=('Apache-2.0')
+makedpends=('ruby' 'mesa' 'xmlto' 'xmltoman' 'python-xmltodict' 'asciidoc' 'opencl-headers' 'ninja' 'make' 'cmake' 'extra-cmake-modules' 'git'
+            'clang' 'llvm' 'llvm-libs' 'gcc' 'gcc-libs' 'lib32-mesa' 'lib32-clang' 'lib32-llvm' 'lib32-llvm-libs' 'lib32-gcc-libs')
+depends=('lib32-glibc')
+optdepends=('lib32-opencl-driver: packaged opencl driver')
+conflicts=('lib32-libcl' 'lib32-ocl-icd')
+replaces=('lib32-libcl')
+provides=('lib32-opencl-icd-loader' 'lib32-ocl-icd' 'lib32-ocl-icd-git')
+source=('OpenCL-ICD-Loader::git+https://github.com/KhronosGroup/OpenCL-ICD-Loader.git')
+md5sums=('SKIP')
+
+pkgver(){
+ cd OpenCL-ICD-Loader
+ echo 2020.12.18.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+}
+
+build() {
+if [[ $_compiler = "1" ]]; then
+  export CC="gcc"
+  export CXX="g++"
+elif [[ $_compiler = "2" ]]; then
+  export CC="clang"
+  export CXX="clang++"
+else
+  export CC="gcc"
+  export CXX="g++"
+fi
+export PKG_CONFIG=/usr/bin/i686-pc-linux-gnu-pkg-config
+
+  cd OpenCL-ICD-Loader
+
+  rm -rf build_32
+
+  cmake -H. -G Ninja -Bbuild_32-shared \
+  -DCMAKE_C_FLAGS=-m32 \
+  -DCMAKE_CXX_FLAGS=-m32 \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DCMAKE_INSTALL_LIBDIR=lib32 \
+  -DOPENCL_ICD_LOADER_HEADERS_DIR=/usr \
+  -DENABLE_OPENCL_LAYERS=ON \
+  -DBUILD_SHARED_LIBS=ON \
+  -DOPENCL_ICD_LOADER_BUILD_TESTING=ON
+
+  cmake -H. -G Ninja -Bbuild_32-static \
+  -DCMAKE_C_FLAGS=-m32 \
+  -DCMAKE_CXX_FLAGS=-m32 \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DCMAKE_INSTALL_LIBDIR=lib32 \
+  -DOPENCL_ICD_LOADER_HEADERS_DIR=/usr \
+  -DENABLE_OPENCL_LAYERS=ON \
+  -DBUILD_SHARED_LIBS=OFF \
+  -DOPENCL_ICD_LOADER_BUILD_TESTING=ON
+
+  ninja -C build_32-shared
+  ninja -C build_32-static
+}
+
+package_lib32-ocl-icd-git(){
+  DESTDIR="$pkgdir" ninja -C OpenCL-ICD-Loader/build_32-shared/ install
+  DESTDIR="$pkgdir" ninja -C OpenCL-ICD-Loader/build_32-static/ install
+
+  # install licence
+  install -Dm644 "${srcdir}"/OpenCL-ICD-Loader/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
