@@ -14,10 +14,6 @@ cd spirv-cross-git && env _compiler=2 makepkg -si && cd ..
 
 cd spirv-tools-git && env _compiler=2 makepkg -si && cd ..
 
-cd lib32-spirv-cross-git && env _compiler=2 makepkg -si && cd ..
-
-cd lib32-spirv-tools-git && env _compiler=2 makepkg -si && cd ..
-
 # glslang
 
 cd glsalng-git && env _compiler=2 makepkg -si && cd ..
