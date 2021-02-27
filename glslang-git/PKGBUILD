@@ -27,7 +27,7 @@ url='https://github.com/KhronosGroup/glslang'
 license=(BSD)
 makedepends=('make' 'cmake' 'git' 'extra-cmake-modules' 'python' 'ninja' 'clang' 'llvm' 'llvm-libs'
              'gcc' 'gcc-libs' 'spirv-tools')
-depends=('gcc-libs' 'llvm-libs ''spirv-tools' 'python')
+depends=('gcc-libs' 'llvm-libs' 'spirv-tools' 'python')
 conflicts=('glslang')
 provides=('glslang' 'glslang-git')
 options=('staticlibs')
