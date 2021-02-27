@@ -16,7 +16,7 @@ cd spirv-tools-git && env _compiler=2 makepkg -si && cd ..
 
 # glslang
 
-cd glsalng-git && env _compiler=2 makepkg -si && cd ..
+cd glslang-git && env _compiler=2 makepkg -si && cd ..
 
 # vulkan
 
@@ -48,7 +48,7 @@ cd lib32-spirv-tools-git && env _compiler=2 makepkg -si && cd ..
 
 # glslang
 
-cd lib32-glsalng-git && env _compiler=2 makepkg -si && cd ..
+cd lib32-glslang-git && env _compiler=2 makepkg -si && cd ..
 
 # vulkan
 
