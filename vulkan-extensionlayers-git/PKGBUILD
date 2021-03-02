@@ -20,7 +20,7 @@ fi
 
 pkgname=vulkan-extensionlayers-git
 pkgdesc='Layer providing Vulkan features when native support is unavailable (git version)'
-pkgver=1.2.170
+pkgver=1.2.171
 pkgrel=1
 arch=('x86_64')
 url='https://github.com/KhronosGroup/Vulkan-ExtensionLayer.git'
@@ -34,7 +34,7 @@ md5sums=('SKIP')
 
 pkgver(){
   cd Vulkan-ExtensionLayer
-  echo 1.2.170.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+  echo 1.2.171.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
 }
 
 prepare(){
