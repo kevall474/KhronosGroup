@@ -94,8 +94,11 @@ export PKG_CONFIG=/usr/bin/i686-pc-linux-gnu-pkg-config
 package_lib32-vulkan-validation-layers-git(){
   DESTDIR="$pkgdir" ninja -C Vulkan-ValidationLayers/build_32/ install
 
-  rm -rf "${pkgdir}"/usr/{bin,include,share}
+  rm -rf "${pkgdir}"/usr/{include,share}
 
   # install licence
   install -Dm644 "${srcdir}"/Vulkan-ValidationLayers/LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  
+  cd "${pkgdir}/usr/bin"
+  for i in $(find . -type f); do mv ${i} ${i}-32; done
 }
