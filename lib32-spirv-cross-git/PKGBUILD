@@ -118,7 +118,7 @@ package_lib32-spirv-cross-git(){
   DESTDIR="$pkgdir" ninja -C SPIRV-Cross/build_32-static/ install
   DESTDIR="$pkgdir" ninja -C SPIRV-Cross/build_32-shared/ install
 
-  rm -rf "${pkgdir}"/usr/{bin,include,share}
+  rm -rf "${pkgdir}"/usr/{include,share}
 
   # install licence
   install -Dm644 "${srcdir}"/SPIRV-Cross/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
