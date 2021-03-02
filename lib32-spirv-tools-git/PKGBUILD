@@ -109,7 +109,7 @@ package_lib32-spirv-tools-git(){
   #DESTDIR="$pkgdir" ninja -C SPIRV-Tools/build_32-static/ install
   DESTDIR="$pkgdir" ninja -C SPIRV-Tools/build_32-shared/ install
 
-  rm -rf "${pkgdir}"/usr/{bin,include,share}
+  rm -rf "${pkgdir}"/usr/{include,share}
 
   # install licence
   install -Dm644 "${srcdir}"/SPIRV-Tools/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
