@@ -109,8 +109,11 @@ package_lib32-glslang-git(){
   DESTDIR="$pkgdir" ninja -C glslang/build_32-static/ install
   DESTDIR="$pkgdir" ninja -C glslang/build_32-shared/ install
 
-  rm -rf "${pkgdir}"/usr/{bin,include,share}
+  rm -rf "${pkgdir}"/usr/{include,share}
 
   # install licence
   install -Dm644 "${srcdir}"/glslang/LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  
+  cd "${pkgdir}/usr/bin"
+  for i in $(find . -type f); do mv ${i} ${i}-32; done
 }
