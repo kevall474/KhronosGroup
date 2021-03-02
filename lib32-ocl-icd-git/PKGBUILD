@@ -21,7 +21,7 @@ fi
 #######################################
 
 pkgname=lib32-ocl-icd-git
-pkgdesc="OpenCL ICD Bindings (git version) (32bit)"
+pkgdesc="OpenCL ICD Bindings (32-bit) (git version)"
 pkgver=2020.12.18
 pkgrel=1
 arch=('i686' 'x86_64')
