@@ -21,7 +21,7 @@ fi
 
 pkgname=vulkan-validation-layers-git
 pkgdesc='Vulkan Validation Layers (git version)'
-pkgver=1.2.170
+pkgver=1.2.172
 pkgrel=1
 arch=('x86_64')
 url='https://github.com/KhronosGroup/Vulkan-ValidationLayers'
@@ -36,7 +36,7 @@ md5sums=('SKIP')
 
 pkgver(){
   cd Vulkan-ValidationLayers
-  echo 1.2.170.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+  echo 1.2.172.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
 }
 
 prepare(){
