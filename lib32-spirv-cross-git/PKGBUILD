@@ -8,7 +8,6 @@
 
 #######################################
 
-#Set compiler to build spirv package
 #Set '1' to build with GCC
 #Set '2' to build with CLANG
 #Default is empty. It will build with GCC. To build with different compiler just use : env _compiler=(1 or 2) makepkg -s
@@ -122,7 +121,7 @@ package_lib32-spirv-cross-git(){
 
   # install licence
   install -Dm644 "${srcdir}"/SPIRV-Cross/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-  
+
   cd "${pkgdir}/usr/bin"
   for i in $(find . -type f); do mv ${i} ${i}-32; done
 }
