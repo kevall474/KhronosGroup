@@ -30,7 +30,7 @@ cd vulkan-extensionlayers-git && env _compiler=2 makepkg -si && cd ..
 
 cd vulkan-tools-git && env _compiler=2 makepkg -si && cd ..
 
-cd vulkan-lunarg-tools-git && env _compiler=2 makepkg -si && cd ..
+#cd vulkan-lunarg-tools-git && env _compiler=2 makepkg -si && cd ..
 
 # opencl
 
