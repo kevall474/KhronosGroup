@@ -26,7 +26,7 @@ arch=('x86_64')
 url='https://github.com/KhronosGroup/Vulkan-ValidationLayers'
 license=(Apache-2.0)
 makedepends=('cmake' 'make' 'extra-cmake-modules' 'python' 'python-lxml' 'libx11' 'libxrandr' 'wayland' 'git'
-             'gcc' 'gcc-libs' 'clang' 'llvm' 'llvm-libs' 'ninja')
+             'gcc' 'gcc-libs' 'clang' 'llvm' 'llvm-libs' 'ninja' 'robin-hood-hashing')
 depends=('gcc-libs' 'llvm-libs' 'vulkan-icd-loader' 'vulkan-headers' 'libx11' 'glslang')
 conflicts=('vulkan-validation-layers')
 provides=('vulkan-validation-layers' 'vulkan-validation-layers-git')
