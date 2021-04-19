@@ -20,7 +20,7 @@ fi
 
 pkgname=vulkan-headers-git
 pkgdesc='Vulkan header files (git version)'
-pkgver=1.2.175
+pkgver=1.2.176
 pkgrel=1
 arch=('x86_64')
 url='https://github.com/KhronosGroup/Vulkan-Headers'
@@ -33,7 +33,7 @@ md5sums=('SKIP')
 
 pkgver(){
   cd Vulkan-Headers
-  echo 1.2.175.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+  echo 1.2.176.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
 }
 
 build(){
