@@ -8,55 +8,55 @@
 
 # spir-v
 
-cd spirv-headers-git && env _compiler=2 makepkg -si && cd ..
+cd spirv-headers-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
-cd spirv-cross-git && env _compiler=2 makepkg -si && cd ..
+cd spirv-cross-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
-cd spirv-tools-git && env _compiler=2 makepkg -si && cd ..
+cd spirv-tools-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
 # glslang
 
-cd glslang-git && env _compiler=2 makepkg -si && cd ..
+cd glslang-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
 # vulkan
 
-cd vulkan-headers-git && env _compiler=2 makepkg -si && cd ..
+cd vulkan-headers-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
-cd vulkan-icd-loader-git && env _compiler=2 makepkg -si && cd ..
+cd vulkan-icd-loader-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
-cd vulkan-validation-layers-git && makepkg -si && cd ..
+cd vulkan-validation-layers-git && makepkg -si --noconfirm && cd ..
 
-cd vulkan-extensionlayers-git && env _compiler=2 makepkg -si && cd ..
+cd vulkan-extensionlayers-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
-cd vulkan-tools-git && env _compiler=2 makepkg -si && cd ..
+cd vulkan-tools-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
-#cd vulkan-lunarg-tools-git && env _compiler=2 makepkg -si && cd ..
+#cd vulkan-lunarg-tools-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
 # opencl
 
-cd opencl-headers-git && env _compiler=2 makepkg -si && cd ..
+cd opencl-headers-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
-cd opencl-clhpp-git && env _compiler=2 makepkg -si && cd ..
+cd opencl-clhpp-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
 # lib32 #
 
 # spirv
 
-cd lib32-spirv-cross-git && env _compiler=2 makepkg -si && cd ..
+cd lib32-spirv-cross-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
-cd lib32-spirv-tools-git && env _compiler=2 makepkg -si && cd ..
+cd lib32-spirv-tools-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
 # glslang
 
-cd lib32-glslang-git && env _compiler=2 makepkg -si && cd ..
+cd lib32-glslang-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
 # vulkan
 
-cd lib32-vulkan-icd-loader-git && env _compiler=2 makepkg -si && cd ..
+cd lib32-vulkan-icd-loader-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
-cd lib32-vulkan-validation-layers-git && makepkg -si && cd ..
+cd lib32-vulkan-validation-layers-git && makepkg -si --noconfirm && cd ..
 
-cd lib32-vulkan-extensionlayers-git && env _compiler=2 makepkg -si && cd ..
+cd lib32-vulkan-extensionlayers-git && env _compiler=2 makepkg -si --noconfirm && cd ..
 
 # make a copy of every pkg in package-$(date -I)/ dir
 
