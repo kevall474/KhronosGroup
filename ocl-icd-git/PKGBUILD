@@ -72,5 +72,5 @@ package_ocl-icd-git(){
   #install -Dt "$pkgdir"/usr/include/CL/ -m644 OpenCL-ICD-Loader/include/*.h
 
   # install licence
-  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/LICENSE
+  install -Dm644 COPYING $pkgdir/usr/share/licenses/$pkgname/LICENSE
 }
