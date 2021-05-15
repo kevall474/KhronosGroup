@@ -20,7 +20,7 @@ fi
 
 pkgname=opencl-clhpp-git
 pkgdesc='OpenCL C++ header files'
-pkgver=2.0.13
+pkgver=2.0.14
 pkgrel=1
 arch=('x86_64')
 url='https://github.com/KhronosGroup/OpenCL-CLHPP'
@@ -34,7 +34,7 @@ provides=('opencl-clhpp' 'opencl-clhpp-git')
 
 pkgver(){
   cd OpenCL-CLHPP
-  echo 2.0.13.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+  echo 2.0.14.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
 }
 
 build(){
