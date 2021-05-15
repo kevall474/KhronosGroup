@@ -21,7 +21,7 @@ fi
 
 pkgname=opencl-headers-git
 pkgdesc='OpenCL (Open Computing Language) header files'
-pkgver=2020.12.18
+pkgver=2021.04.29
 pkgrel=1
 arch=('x86_64')
 url='https://github.com/KhronosGroup/OpenCL-Headers'
@@ -35,7 +35,7 @@ optdepends=('opencl-clhpp: C++ support')
 
 pkgver(){
   cd OpenCL-Headers
-  echo 2020.12.18.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+  echo 2021.04.29.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
 }
 
 build(){
