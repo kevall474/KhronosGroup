@@ -21,7 +21,7 @@ fi
 
 pkgname=ocl-icd-git
 pkgdesc='OpenCL ICD Bindings (git version)'
-pkgver=2020.12.18
+pkgver=2021.04.29
 pkgrel=1
 arch=('x86_64')
 url="https://github.com/OCL-dev/ocl-icd"
@@ -38,7 +38,7 @@ md5sums=('SKIP')
 
 pkgver(){
  cd OpenCL-ICD-Loader
- echo 2020.12.18.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+ echo 2021.04.29.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
 }
 
 build() {
