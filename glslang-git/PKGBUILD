@@ -19,7 +19,7 @@ fi
 
 pkgname=glslang-git
 pkgdesc='OpenGL and OpenGL ES shader front end and validator. (git version)'
-pkgver=11.2.0
+pkgver=11.4.0
 pkgrel=1
 arch=('x86_64')
 url='https://github.com/KhronosGroup/glslang'
@@ -35,7 +35,7 @@ md5sums=('SKIP')
 
 pkgver(){
   cd glslang
-  echo 11.2.0.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+  echo 11.4.0.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
 }
 
 prepare(){
