@@ -21,7 +21,7 @@ fi
 
 pkgname=lib32-ocl-icd-git
 pkgdesc="OpenCL ICD Bindings (32-bit) (git version)"
-pkgver=2021.04.29
+pkgver=2.3.0
 pkgrel=1
 arch=('i686' 'x86_64')
 url="https://github.com/OCL-dev/ocl-icd"
@@ -33,12 +33,12 @@ optdepends=('lib32-opencl-driver: packaged opencl driver')
 conflicts=('lib32-libcl' 'lib32-ocl-icd')
 replaces=('lib32-libcl')
 provides=('lib32-opencl-icd-loader' 'lib32-ocl-icd' 'lib32-ocl-icd-git')
-source=('OpenCL-ICD-Loader::git+https://github.com/KhronosGroup/OpenCL-ICD-Loader.git')
+source=('ocl-icd::git+https://github.com/OCL-dev/ocl-icd.git')
 md5sums=('SKIP')
 
 pkgver(){
- cd OpenCL-ICD-Loader
- echo 2021.04.29.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+ cd ocl-icd
+ echo 2.3.0.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
 }
 
 build() {
@@ -54,38 +54,23 @@ else
 fi
 export PKG_CONFIG=/usr/bin/i686-pc-linux-gnu-pkg-config
 
-  cd OpenCL-ICD-Loader
+  cd ocl-icd
 
-  rm -rf build_32
+  autoreconf -fiv
 
-  cmake -H. -G Ninja -Bbuild_32-shared \
-  -DCMAKE_C_FLAGS=-m32 \
-  -DCMAKE_CXX_FLAGS=-m32 \
-  -DCMAKE_INSTALL_PREFIX=/usr \
-  -DCMAKE_INSTALL_LIBDIR=lib32 \
-  -DOPENCL_ICD_LOADER_HEADERS_DIR=/usr \
-  -DENABLE_OPENCL_LAYERS=ON \
-  -DBUILD_SHARED_LIBS=ON \
-  -DOPENCL_ICD_LOADER_BUILD_TESTING=ON
+  ./configure --prefix=/usr --libdir=/usr/lib32
 
-  cmake -H. -G Ninja -Bbuild_32-static \
-  -DCMAKE_C_FLAGS=-m32 \
-  -DCMAKE_CXX_FLAGS=-m32 \
-  -DCMAKE_INSTALL_PREFIX=/usr \
-  -DCMAKE_INSTALL_LIBDIR=lib32 \
-  -DOPENCL_ICD_LOADER_HEADERS_DIR=/usr \
-  -DENABLE_OPENCL_LAYERS=ON \
-  -DBUILD_SHARED_LIBS=OFF \
-  -DOPENCL_ICD_LOADER_BUILD_TESTING=ON
-
-  ninja -C build_32-shared
-  ninja -C build_32-static
+  make -j$(nproc)
 }
 
 package_lib32-ocl-icd-git(){
-  DESTDIR="$pkgdir" ninja -C OpenCL-ICD-Loader/build_32-shared/ install
-  DESTDIR="$pkgdir" ninja -C OpenCL-ICD-Loader/build_32-static/ install
+
+  cd ocl-icd
+
+  make DESTDIR="$pkgdir" install
+
+  rm -rf "$pkgdir"/usr/{share,include}
 
   # install licence
-  install -Dm644 "${srcdir}"/OpenCL-ICD-Loader/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }

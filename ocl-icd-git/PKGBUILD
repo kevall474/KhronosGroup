@@ -63,13 +63,10 @@ fi
 }
 
 package_ocl-icd-git(){
+
   cd ocl-icd
 
   make DESTDIR="$pkgdir" install
-
-  # remove headers. commit : 1cacbf8c358136655c18b5050f0f85e3d403d501
-  # install headers
-  #install -Dt "$pkgdir"/usr/include/CL/ -m644 OpenCL-ICD-Loader/include/*.h
 
   # install licence
   install -Dm644 COPYING $pkgdir/usr/share/licenses/$pkgname/LICENSE
