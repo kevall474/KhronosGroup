@@ -20,7 +20,7 @@ fi
 
 pkgname=lib32-vulkan-icd-loader-git
 pkgdesc='Vulkan Installable Client Driver (ICD) Loader (32-bit) (git version)'
-pkgver=1.2.178
+pkgver=1.2.180
 pkgrel=1
 arch=('i686' 'x86_64')
 url='https://github.com/KhronosGroup/Vulkan-Loader'
@@ -37,14 +37,14 @@ md5sums=('SKIP')
 
 pkgver(){
  cd Vulkan-Loader
- echo 1.2.178.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+ echo 1.2.180.$(date -I | sed 's/-/_/' | sed 's/-/_/').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)
 }
 
 
 prepare(){
   cd Vulkan-Loader
   #scripts/update_deps.py
-  git clone https://github.com/google/googletest.git external/googletest # optional
+  #git clone https://github.com/google/googletest.git external/googletest # optional
 }
 
 build(){
@@ -73,7 +73,7 @@ export PKG_CONFIG=/usr/bin/i686-pc-linux-gnu-pkg-config
   -DCMAKE_INSTALL_SYSCONFDIR=/etc \
   -DCMAKE_INSTALL_DATADIR=/share \
   -DCMAKE_SKIP_RPATH=True \
-  -DBUILD_TESTS=ON \
+  -DBUILD_TESTS=OFF \
   -DBUILD_WSI_XCB_SUPPORT=On \
   -DBUILD_WSI_XLIB_SUPPORT=On \
   -DBUILD_WSI_WAYLAND_SUPPORT=On \
